@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Head from '../Head/Head';
+import Head from '../Head';
 import styles from './Page.module.scss'
 
 interface PageProps {
   title: string;
 }
 
-const Page: React.FC<PageProps> = ({ title, children }) => {
+const Index: React.FC<PageProps> = ({ title, children }) => {
   return (
     <div className={styles.Page}>
       <Head title={title} />
@@ -17,4 +17,4 @@ const Page: React.FC<PageProps> = ({ title, children }) => {
 };
 
 
-export default Page;
+export default Index;
