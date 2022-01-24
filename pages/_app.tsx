@@ -1,15 +1,15 @@
 import type { AppProps } from 'next/app';
-import dynamic from 'next/dynamic';
 
+import AppBar from '../components/AppBar/AppBar';
+import BottomNavigation from '../components/BottomNavigation';
 import Head from '../components/Head';
 import '../styles/globals.css';
-
-const BottomNavigation = dynamic(() => import('../components/BottomNavigation'), { ssr: false });
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <div>
       <Head />
+      <AppBar />
       <Component {...pageProps} />
       <BottomNavigation />
     </div>
