@@ -24,7 +24,9 @@ export interface PlantProps {
 const NUM_PLACEHOLDERS = 6;
 
 const Plants: NextPage = () => {
-  const { push } = useRouter();
+  const { push, query } = useRouter();
+  console.log(query);
+  const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Plants);
   const { data: plants, fetchData } = useFetch<IPlant[]>({ url: '/api/plants' });
   const actions = [{ icon: <PlantIcon />, name: 'Neue Pflanze', route: getRoute(Pages.PlantsAdd) }];
@@ -41,7 +43,14 @@ const Plants: NextPage = () => {
           ? Array(NUM_PLACEHOLDERS)
               .fill(null)
               .map((_, index) => <Skeleton key={index} variant="rectangular" width={300} height={350} />)
-          : plants.map((plant) => <PlantCard key={plant.name} plant={plant} />)}
+          : plants
+              .filter(({ name, botanicalName }) =>
+                search
+                  ? botanicalName.toLowerCase().includes((search as string).toLowerCase()) ||
+                    name.toLowerCase().includes((search as string).toLowerCase())
+                  : true,
+              )
+              .map((plant) => <PlantCard key={plant.name} plant={plant} />)}
       </div>
 
       <SpeedDial
