@@ -1,0 +1,9 @@
+.Plant {
+  .Image {
+    display: block;
+
+    &.Loading {
+      display: none;
+    }
+  }
+}

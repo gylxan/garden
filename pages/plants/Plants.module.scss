@@ -1,0 +1,12 @@
+.PlantsPage {
+  .Plants {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    width: 100%;
+
+    & > * {
+      max-width: 250px;
+    }
+  }
+}

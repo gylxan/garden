@@ -8,6 +8,7 @@ export enum Pages {
   Home,
   Plants,
   Calendar,
+  PlantsAdd,
 }
 
 export const pages: Record<Pages, PageConfiguration> = {
@@ -21,6 +22,12 @@ export const pages: Record<Pages, PageConfiguration> = {
     name: 'Pflanzen',
     description: 'Übersicht der Pflanzen',
     route: '/plants',
+    icon: PlantIcon,
+  },
+  [Pages.PlantsAdd]: {
+    name: 'Pflanze hinzufügen',
+    description: 'Pflanzen hinzufügen',
+    route: '/plants/add',
     icon: PlantIcon,
   },
   [Pages.Calendar]: {
