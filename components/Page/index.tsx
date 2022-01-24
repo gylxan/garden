@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import Head from 'next/head';
 
 import React from 'react';
@@ -7,11 +8,12 @@ import styles from './Page.module.scss';
 interface PageProps {
   title: string;
   description?: string;
+  className?: string;
 }
 
-const Index: React.FC<PageProps> = ({ title, description, children }) => {
+const Index: React.FC<PageProps> = ({ title, description, children, className }) => {
   return (
-    <div className={styles.Page}>
+    <div className={classNames(styles.Page, className)}>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
