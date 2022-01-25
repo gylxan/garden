@@ -25,7 +25,6 @@ const NUM_PLACEHOLDERS = 6;
 
 const Plants: NextPage = () => {
   const { push, query } = useRouter();
-  console.log(query);
   const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Plants);
   const { data: plants, fetchData } = useFetch<IPlant[]>({ url: '/api/plants' });
