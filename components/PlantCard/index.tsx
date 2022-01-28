@@ -3,11 +3,15 @@ import classNames from 'classnames';
 
 import { useState } from 'react';
 
-import { PlantProps } from '../../pages/plants';
+import { IPlant } from '../../interfaces/Plant';
 
 import styles from './PlantCard.module.scss';
 
-export function PlantCard({ plant }: PlantProps) {
+export interface PlantsAddPageProps {
+  plant: IPlant;
+}
+
+export function PlantCard({ plant }: PlantsAddPageProps) {
   const [isImageLoading, setImageLoading] = useState(true);
   return (
     <Card className={styles.Plant}>
@@ -30,7 +34,9 @@ export function PlantCard({ plant }: PlantProps) {
           {plant.botanicalName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {plant.sowingDescription?.length ?? 0 > 180 ? `${plant.sowingDescription.substring(0, 180)}...` : plant.sowingDescription}
+          {plant.sowingDescription?.length ?? 0 > 180
+            ? `${plant.sowingDescription?.substring(0, 180)}...`
+            : plant.sowingDescription}
         </Typography>
       </CardContent>
     </Card>

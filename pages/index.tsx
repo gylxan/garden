@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Page from '../components/Page';
+import Page from '../components/Page/page';
 import { Pages } from '../constants/page';
 import { getPageConfiguration } from '../helpers/page';
 import { getRoute } from '../helpers/page';

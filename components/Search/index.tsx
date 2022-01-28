@@ -4,7 +4,8 @@ import { alpha, IconButton, InputBase } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import { ParsedUrlQuery } from "querystring";
 
 const SearchForm = styled('form')(({ theme }) => ({
   position: 'relative',
@@ -66,6 +67,7 @@ export function Search() {
   const { pathname, push, query, isReady } = useRouter();
   const { query: searchQuery } = query;
   const [value, setValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>();
 
   // The effect is needed, because router is not ready on first render so
   // we can't use query as initial state for value
@@ -75,14 +77,19 @@ export function Search() {
     }
   }, [searchQuery, isReady]);
 
+  function redirectWithQuery(query: string) {
+    push({ pathname, query: { query } });
+  }
+
   function handleSubmit(e: FormEvent) {
-    push({ pathname, query: { query: value } });
+    redirectWithQuery(value);
     e.preventDefault();
   }
 
   function clear() {
     setValue('');
-    push({ pathname, query: { query: '' } });
+    redirectWithQuery('');
+    inputRef.current?.focus();
   }
   return (
     <SearchForm onSubmit={handleSubmit}>
@@ -94,6 +101,7 @@ export function Search() {
         inputProps={{ 'aria-label': 'search' }}
         name="query"
         value={value}
+        inputRef={inputRef}
         onChange={(e) => setValue(e.currentTarget.value)}
       />
       {value && (

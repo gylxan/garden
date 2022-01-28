@@ -11,11 +11,11 @@ interface PageProps {
   className?: string;
 }
 
-const Index: React.FC<PageProps> = ({ title, description, children, className }) => {
+const Page: React.FC<PageProps> = ({ title, description, children, className }) => {
   return (
     <div className={classNames(styles.Page, className)}>
       <Head>
-        <title>{title}</title>
+        <title>{title} | Garden</title>
         <meta name="description" content={description} />
       </Head>
       <main className={styles.Main}>{children}</main>
@@ -23,4 +23,4 @@ const Index: React.FC<PageProps> = ({ title, description, children, className })
   );
 };
 
-export default Index;
+export default Page;

@@ -1,8 +1,6 @@
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import { alpha, Box, Button, IconButton, InputBase, Toolbar, Typography } from '@mui/material';
+import { Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
-import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 
 import React from 'react';
@@ -11,13 +9,13 @@ import { navigation } from '../../constants/navigation';
 import { Pages } from '../../constants/page';
 import { getPageNameByRoute, getRoute } from '../../helpers/page';
 import Link from '../Link';
-import { Search } from "../Search";
+import { Search } from '../Search';
 
 export interface Props {
   authenticated?: boolean;
 }
 
-const AppBar: React.FC<Props> = ({ authenticated }) => {
+const Index: React.FC<Props> = ({ authenticated }) => {
   const { pathname } = useRouter();
   const showSearch = pathname === getRoute(Pages.Plants);
 
@@ -62,4 +60,4 @@ const AppBar: React.FC<Props> = ({ authenticated }) => {
   );
 };
 
-export default AppBar;
+export default Index;

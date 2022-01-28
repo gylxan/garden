@@ -12,12 +12,13 @@ import {
   Typography,
 } from '@mui/material';
 import type { NextPage } from 'next';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import Link from '../../../components/Link';
-import Page from '../../../components/Page';
+import Page from '../../../components/Page/page';
 import { monthNames, monthNamesShort } from '../../../constants/date';
 import { Pages } from '../../../constants/page';
 import { defaultPlant, placeholderImageUrl } from '../../../constants/plant';
@@ -80,7 +81,6 @@ const PlantsAdd: NextPage = () => {
     fetchData(formData);
   };
   const fieldProps = { disabled: isLoading, onChange: handleChange };
-  console.log(plant);
 
   return (
     <Page title={name} description={description} className={styles.PlantsAddPage}>
@@ -90,7 +90,7 @@ const PlantsAdd: NextPage = () => {
         method="post"
         onSubmit={handleSubmit}
       >
-        <TextField label="Name" variant="outlined" name="name" required {...fieldProps} />
+        <TextField label="Name" variant="outlined" name="name" required {...fieldProps} autoFocus />
         <TextField label="Botanischer Name" variant="outlined" name="botanicalName" {...fieldProps} required />
         <TextField
           label="Beschreibung zur Aussaat"
@@ -146,7 +146,9 @@ const PlantsAdd: NextPage = () => {
         <TextField label="Wachshöhe in cm" variant="outlined" name="height" type="number" {...fieldProps} />
         <TextField label="Abstand in cm" variant="outlined" name="distance" type="number" {...fieldProps} />
         <Stack direction="row" spacing={1} alignItems="center">
-          <img alt="plant image" src={objectUrl || placeholderImageUrl} className={styles.Image} />
+          <div className={styles.Image}>
+            <Image alt="plant image" src={objectUrl || placeholderImageUrl} layout="fill" objectFit="contain" />
+          </div>
           <Button
             variant="contained"
             color="secondary"
@@ -167,7 +169,7 @@ const PlantsAdd: NextPage = () => {
         <Button type="submit" variant="contained" disabled={isLoading}>
           Hinzufügen
         </Button>
-        <Link to={getRoute(Pages.Plants)} passHref >
+        <Link to={getRoute(Pages.Plants)}>
           <Button type="reset" variant="contained" color="secondary" disabled={isLoading} className={styles.Button}>
             Abbrechen
           </Button>

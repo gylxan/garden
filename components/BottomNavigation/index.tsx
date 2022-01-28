@@ -1,3 +1,4 @@
+import PlantIcon from '@mui/icons-material/YardOutlined';
 import {
   BottomNavigation as MuiBottomNavigation,
   BottomNavigationAction as MuiBottomNavigationAction,
@@ -21,6 +22,7 @@ const BottomNavigation: React.FC<Props> = () => {
           <MuiBottomNavigationAction
             key={route}
             label={name}
+            // @ts-expect-error
             icon={<Icon />}
             component={Link}
             to={route}
