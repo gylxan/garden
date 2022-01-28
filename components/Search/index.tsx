@@ -5,7 +5,6 @@ import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { ParsedUrlQuery } from "querystring";
 
 const SearchForm = styled('form')(({ theme }) => ({
   position: 'relative',
