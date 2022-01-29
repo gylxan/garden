@@ -7,3 +7,5 @@ export const navigation: PageConfiguration[] = [
   getPageConfiguration(Pages.Plants),
   getPageConfiguration(Pages.Calendar),
 ];
+
+export const navigationPaths = navigation.map(({ route }) => route);

@@ -7,6 +7,7 @@ import React from 'react';
 
 import { navigation } from '../../constants/navigation';
 import { Pages } from '../../constants/page';
+import { getMatchingNavigationPath } from '../../helpers/navigation';
 import { getPageNameByRoute, getRoute } from '../../helpers/page';
 import Link from '../Link';
 import { Search } from '../Search';
@@ -15,9 +16,10 @@ export interface Props {
   authenticated?: boolean;
 }
 
-const Index: React.FC<Props> = ({ authenticated }) => {
+const AppBar: React.FC<Props> = ({ authenticated }) => {
   const { pathname } = useRouter();
   const showSearch = pathname === getRoute(Pages.Plants);
+  const matchingNavPath = getMatchingNavigationPath(pathname);
 
   return (
     <MuiAppBar position="sticky">
@@ -39,7 +41,7 @@ const Index: React.FC<Props> = ({ authenticated }) => {
                   my: 2,
                   color: 'white',
                   display: 'flex',
-                  textDecoration: route === pathname ? 'underline' : 'none',
+                  textDecoration: route === matchingNavPath ? 'underline' : 'none',
                 }}
                 key={`${route}-button`}
               >
@@ -60,4 +62,4 @@ const Index: React.FC<Props> = ({ authenticated }) => {
   );
 };
 
-export default Index;
+export default AppBar;
