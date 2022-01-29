@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { Box } from '@mui/system';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -26,8 +27,6 @@ import { getPageConfiguration, getRoute } from '../../../helpers/page';
 import useFetch, { Status } from '../../../hooks/useFetch';
 import { IPlant } from '../../../interfaces/Plant';
 import { Method } from '../../../interfaces/Request';
-
-import styles from './PlantsAdd.module.scss';
 
 const PlantsAdd: NextPage = () => {
   const { name, description } = getPageConfiguration(Pages.PlantsAdd);
@@ -83,7 +82,7 @@ const PlantsAdd: NextPage = () => {
   const fieldProps = { disabled: isLoading, onChange: handleChange };
 
   return (
-    <Page title={name} description={description} className={styles.PlantsAddPage}>
+    <Page title={name} description={description}>
       <Container
         component="form"
         sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '40rem' }}
@@ -146,16 +145,15 @@ const PlantsAdd: NextPage = () => {
         <TextField label="Wachshöhe in cm" variant="outlined" name="height" type="number" {...fieldProps} />
         <TextField label="Abstand in cm" variant="outlined" name="distance" type="number" {...fieldProps} />
         <Stack direction="row" spacing={1} alignItems="center">
-          <div className={styles.Image}>
+          <Box sx={{ display: 'flex', position: 'relative', height: '100px', width: '100px' }}>
             <Image alt="plant image" src={objectUrl || placeholderImageUrl} layout="fill" objectFit="contain" />
-          </div>
+          </Box>
           <Button
             variant="contained"
             color="secondary"
             component="label"
             disabled={isLoading}
             startIcon={<UploadIcon />}
-            className={styles.UploadButton}
           >
             Bild auswählen
             <input type="file" name="image" accept="image/png, image/jpeg" hidden onChange={uploadToClient} />
@@ -166,14 +164,28 @@ const PlantsAdd: NextPage = () => {
             Fehler: {error}
           </FormHelperText>
         )}
-        <Button type="submit" variant="contained" disabled={isLoading}>
-          Hinzufügen
-        </Button>
-        <Link to={getRoute(Pages.Plants)}>
-          <Button type="reset" variant="contained" color="secondary" disabled={isLoading} className={styles.Button}>
-            Abbrechen
+        <Box
+          sx={{
+            display: 'flex',
+            position: 'relative',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignSelf: 'center',
+            width: '100%',
+            marginTop: 4,
+            gap: 2,
+            minWidth: { md: '400px' },
+            maxWidth: { md: '400px' },
+          }}
+        >
+          <Button sx={{ width: '100%' }} type="submit" variant="contained" disabled={isLoading}>
+            Hinzufügen
           </Button>
-        </Link>
+          <Link to={getRoute(Pages.Plants)} tabIndex={-1}>
+            <Button sx={{ width: '100%' }} type="reset" variant="contained" color="secondary" disabled={isLoading}>
+              Abbrechen
+            </Button>
+          </Link>
+        </Box>
       </Container>
     </Page>
   );

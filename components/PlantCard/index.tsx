@@ -1,11 +1,8 @@
 import { Card, CardContent, CardMedia, Skeleton, Typography } from '@mui/material';
-import classNames from 'classnames';
 
 import { useState } from 'react';
 
 import { IPlant } from '../../interfaces/Plant';
-
-import styles from './PlantCard.module.scss';
 
 export interface PlantsAddPageProps {
   plant: IPlant;
@@ -14,15 +11,15 @@ export interface PlantsAddPageProps {
 export function PlantCard({ plant }: PlantsAddPageProps) {
   const [isImageLoading, setImageLoading] = useState(true);
   return (
-    <Card className={styles.Plant}>
+    <Card>
       <>
         <CardMedia
-          className={classNames(styles.Image, { [styles.Loading]: isImageLoading })}
           component="img"
           height="140"
           image={plant.imageUrl}
           alt="Plant image"
           onLoad={() => setImageLoading(false)}
+          sx={{ display: isImageLoading ? 'none' : 'block' }}
         />
         {isImageLoading && <Skeleton variant="rectangular" height={140} />}
       </>

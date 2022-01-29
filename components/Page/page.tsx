@@ -1,9 +1,7 @@
-import classNames from 'classnames';
+import { Box } from '@mui/system';
 import Head from 'next/head';
 
 import React from 'react';
-
-import styles from './Page.module.scss';
 
 interface PageProps {
   title: string;
@@ -13,13 +11,26 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = ({ title, description, children, className }) => {
   return (
-    <div className={classNames(styles.Page, className)}>
+    <Box sx={{ position: 'relative' }} className={className}>
       <Head>
         <title>{title} | Garden</title>
         <meta name="description" content={description} />
       </Head>
-      <main className={styles.Main}>{children}</main>
-    </div>
+      <Box
+        component="main"
+        sx={{
+          py: 8,
+          display: 'flex',
+          alignItems: 'center',
+          flex: 1,
+          mx: 4,
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 };
 

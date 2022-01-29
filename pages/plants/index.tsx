@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Fab, Skeleton } from '@mui/material';
+import { Box } from '@mui/system';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
@@ -11,8 +12,6 @@ import { getPageConfiguration, getRoute } from '../../helpers/page';
 import useComponentDidMount from '../../hooks/useComponentDidMount';
 import useFetch from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
-
-import styles from './Plants.module.scss';
 
 const NUM_PLACEHOLDERS = 6;
 
@@ -47,8 +46,19 @@ const Plants: NextPage = () => {
   }
 
   return (
-    <Page title={name} description={description} className={styles.PlantsPage}>
-      <div className={styles.Plants}>{plants ? renderPlants() : renderSkeletons()}</div>
+    <Page title={name} description={description}>
+      <Box
+        sx={{
+          display: 'grid',
+          position: 'relative',
+          gap: 3,
+          flexWrap: 'wrap',
+          width: '100%',
+          gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' },
+        }}
+      >
+        {plants ? renderPlants() : renderSkeletons()}
+      </Box>
 
       <Link to={getRoute(Pages.PlantsAdd)}>
         <Fab aria-label="Plant speed dial" sx={{ position: 'fixed', bottom: 70, right: 24 }} color="primary">

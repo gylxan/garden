@@ -35,6 +35,15 @@ const plants: IPlant[] = [
     perennial: false,
     imageUrl: '/plants/placeholder.png',
   },
+  {
+    name: 'Erdbeere',
+    botanicalName: 'Erdbeerico',
+    sowingDescription: 'Freut sich über sonnige bis halbschattige Orte z.B. auf der Fensterbank.',
+    distance: 10,
+    height: 3,
+    perennial: false,
+    imageUrl: '/plants/placeholder.png',
+  },
 ];
 
 function handleGet(req: NextApiRequest, res: NextApiResponse<IPlant[]>) {
