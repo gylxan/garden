@@ -18,7 +18,7 @@ export interface Props {
 
 const AppBar: React.FC<Props> = ({ authenticated }) => {
   const { pathname } = useRouter();
-  const showSearch = pathname === getRoute(Pages.Plants);
+  const showSearch = pathname === getRoute(Pages.Home);
   const matchingNavPath = getMatchingNavigationPath(pathname);
 
   return (

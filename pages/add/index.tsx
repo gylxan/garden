@@ -18,15 +18,15 @@ import { useRouter } from 'next/router';
 
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
-import Link from '../../../components/Link';
-import Page from '../../../components/Page/page';
-import { monthNames, monthNamesShort } from '../../../constants/date';
-import { Pages } from '../../../constants/page';
-import { defaultPlant, placeholderImageUrl } from '../../../constants/plant';
-import { getPageConfiguration, getRoute } from '../../../helpers/page';
-import useFetch, { Status } from '../../../hooks/useFetch';
-import { IPlant } from '../../../interfaces/Plant';
-import { Method } from '../../../interfaces/Request';
+import Link from '../../components/Link';
+import Page from '../../components/Page/page';
+import { monthNames, monthNamesShort } from '../../constants/date';
+import { Pages } from '../../constants/page';
+import { defaultPlant, placeholderImageUrl } from '../../constants/plant';
+import { getPageConfiguration, getRoute } from '../../helpers/page';
+import useFetch, { Status } from '../../hooks/useFetch';
+import { IPlant } from '../../interfaces/Plant';
+import { Method } from '../../interfaces/Request';
 
 const PlantsAdd: NextPage = () => {
   const { name, description } = getPageConfiguration(Pages.PlantsAdd);
@@ -43,7 +43,7 @@ const PlantsAdd: NextPage = () => {
 
   useEffect(() => {
     if (status === Status.Successful) {
-      push(getRoute(Pages.Plants));
+      push(getRoute(Pages.Home));
     }
   }, [status, push]);
 
@@ -58,7 +58,7 @@ const PlantsAdd: NextPage = () => {
   const changePlantValue = (attributeName: keyof IPlant, value: IPlant[keyof IPlant]) =>
     setPlant({ ...plant, [attributeName]: value });
 
-  const handleSliderChange = (e: Event, value: number | number[], activeThumb: number) => {
+  const handleSliderChange = (e: Event, value: number | number[]) => {
     if (Array.isArray(value) && value.length === 2) {
       // @ts-expect-error
       changePlantValue(e.target.name as keyof IPlant, { form: value[0], to: value[1] });
@@ -180,7 +180,7 @@ const PlantsAdd: NextPage = () => {
           <Button sx={{ width: '100%' }} type="submit" variant="contained" disabled={isLoading}>
             Hinzufügen
           </Button>
-          <Link to={getRoute(Pages.Plants)} tabIndex={-1}>
+          <Link to={getRoute(Pages.Home)} tabIndex={-1}>
             <Button sx={{ width: '100%' }} type="reset" variant="contained" color="secondary" disabled={isLoading}>
               Abbrechen
             </Button>
