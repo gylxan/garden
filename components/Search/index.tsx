@@ -2,9 +2,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha, IconButton, InputBase } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 
 const SearchForm = styled('form')(({ theme }) => ({
   position: 'relative',
@@ -60,10 +61,13 @@ const ClearIconButton = styled(IconButton)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   right: 0,
+  color: 'inherit',
 }));
 
+const debounceTime = 250;
+
 export function Search() {
-  const { pathname, push, query, isReady } = useRouter();
+  const { pathname, query, isReady, replace } = useRouter();
   const { query: searchQuery } = query;
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>();
@@ -77,12 +81,21 @@ export function Search() {
   }, [searchQuery, isReady]);
 
   function redirectWithQuery(query: string) {
-    push({ pathname, query: { query } });
+    replace({ pathname, query: { query } });
   }
 
+  const debouncedRedirectWithQuery = useRef(
+    debounce((nextValue: string) => redirectWithQuery(nextValue), debounceTime),
+  ).current;
+
   function handleSubmit(e: FormEvent) {
-    redirectWithQuery(value);
     e.preventDefault();
+  }
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.currentTarget.value;
+    setValue(value);
+    debouncedRedirectWithQuery(value);
   }
 
   function clear() {
@@ -90,6 +103,7 @@ export function Search() {
     redirectWithQuery('');
     inputRef.current?.focus();
   }
+
   return (
     <SearchForm onSubmit={handleSubmit}>
       <SearchIconWrapper>
@@ -101,10 +115,10 @@ export function Search() {
         name="query"
         value={value}
         inputRef={inputRef}
-        onChange={(e) => setValue(e.currentTarget.value)}
+        onChange={handleChange}
       />
       {value && (
-        <ClearIconButton aria-label="delete" onClick={() => clear()} color="primary">
+        <ClearIconButton aria-label="delete" onClick={() => clear()}>
           <ClearIcon />
         </ClearIconButton>
       )}

@@ -157,7 +157,7 @@ const PlantsAdd: NextPage = () => {
             startIcon={<UploadIcon />}
             className={styles.UploadButton}
           >
-            Planzenbild auswählen
+            Bild auswählen
             <input type="file" name="image" accept="image/png, image/jpeg" hidden onChange={uploadToClient} />
           </Button>
         </Stack>

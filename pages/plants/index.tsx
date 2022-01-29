@@ -1,8 +1,9 @@
-import { Skeleton, SpeedDial } from '@mui/material';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import AddIcon from '@mui/icons-material/Add';
+import { Fab, Skeleton } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import Link from '../../components/Link';
 import Page from '../../components/Page/page';
 import { PlantCard } from '../../components/PlantCard';
 import { Pages } from '../../constants/page';
@@ -16,7 +17,7 @@ import styles from './Plants.module.scss';
 const NUM_PLACEHOLDERS = 6;
 
 const Plants: NextPage = () => {
-  const { push, query } = useRouter();
+  const { query } = useRouter();
   const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Plants);
   const { data: plants, fetchData } = useFetch<IPlant[]>({ url: '/api/plants' });
@@ -24,10 +25,6 @@ const Plants: NextPage = () => {
   useComponentDidMount(() => {
     fetchData();
   });
-
-  function handleSpeedDialClick() {
-    push(getRoute(Pages.PlantsAdd));
-  }
 
   function renderSkeletons() {
     return Array(NUM_PLACEHOLDERS)
@@ -53,13 +50,11 @@ const Plants: NextPage = () => {
     <Page title={name} description={description} className={styles.PlantsPage}>
       <div className={styles.Plants}>{plants ? renderPlants() : renderSkeletons()}</div>
 
-      <SpeedDial
-        ariaLabel="Plant speed dial"
-        sx={{ position: 'fixed', bottom: 70, right: 24 }}
-        icon={<SpeedDialIcon />}
-        onClick={handleSpeedDialClick}
-        open={false}
-      />
+      <Link to={getRoute(Pages.PlantsAdd)}>
+        <Fab aria-label="Plant speed dial" sx={{ position: 'fixed', bottom: 70, right: 24 }} color="primary">
+          <AddIcon />
+        </Fab>
+      </Link>
     </Page>
   );
 };

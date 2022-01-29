@@ -14,7 +14,7 @@ export enum Pages {
 export const pages: Record<Pages, PageConfiguration> = {
   [Pages.Home]: {
     name: 'Home',
-    description: 'Startseite der Garden App',
+    description: 'Willkommen im Garden',
     route: '/',
     icon: HomeIcon,
   },
