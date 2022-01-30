@@ -83,9 +83,9 @@ const PlantsAdd: NextPage = () => {
 
   return (
     <Page title={name} description={description}>
-      <Container
+      <Box
         component="form"
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '40rem' }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '40rem', width: '100%' }}
         method="post"
         onSubmit={handleSubmit}
       >
@@ -186,7 +186,7 @@ const PlantsAdd: NextPage = () => {
             </Button>
           </Link>
         </Box>
-      </Container>
+      </Box>
     </Page>
   );
 };
