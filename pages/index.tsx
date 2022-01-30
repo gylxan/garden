@@ -10,7 +10,7 @@ import { PlantCard } from '../components/PlantCard';
 import { Pages } from '../constants/page';
 import { getPageConfiguration, getRoute } from '../helpers/page';
 import useComponentDidMount from '../hooks/useComponentDidMount';
-import useFetch from '../hooks/useFetch';
+import useFetch, { Status } from '../hooks/useFetch';
 import { IPlant } from '../interfaces/Plant';
 
 const NUM_PLACEHOLDERS = 6;
@@ -19,8 +19,9 @@ const Plants: NextPage = () => {
   const { query } = useRouter();
   const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Home);
-  const { data: plants, fetchData } = useFetch<IPlant[]>({ url: '/api/plants' });
+  const { data: plants, fetchData, status } = useFetch<IPlant[]>({ url: '/api/plants' });
 
+  const isLoading = status === Status.Loading;
   useComponentDidMount(() => {
     fetchData();
   });
@@ -28,7 +29,7 @@ const Plants: NextPage = () => {
   function renderSkeletons() {
     return Array(NUM_PLACEHOLDERS)
       .fill(null)
-      .map((_, index) => <Skeleton key={index} variant="rectangular" width={300} height={350} />);
+      .map((_, index) => <Skeleton key={index} variant="rectangular" width="100%" height={350} />);
   }
 
   function renderPlants() {
@@ -41,7 +42,7 @@ const Plants: NextPage = () => {
               name.toLowerCase().includes((search as string).toLowerCase())
             : true,
         )
-        .map((plant) => <PlantCard key={plant.name} plant={plant} />)
+        .map((plant) => <Box component={PlantCard} key={plant.name} plant={plant} sx={{ width: '100%' }} />)
     );
   }
 
@@ -54,10 +55,15 @@ const Plants: NextPage = () => {
           gap: 3,
           flexWrap: 'wrap',
           width: '100%',
-          gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' },
+          gridTemplateColumns: {
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+            md: 'repeat(4, 1fr)',
+            lg: 'repeat(5, 1fr)',
+          },
         }}
       >
-        {plants ? renderPlants() : renderSkeletons()}
+        {isLoading ? renderSkeletons() : renderPlants()}
       </Box>
 
       <Link to={getRoute(Pages.PlantsAdd)}>
