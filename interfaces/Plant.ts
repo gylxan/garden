@@ -10,6 +10,7 @@ export interface IPlant {
   height?: number | null;
   distance?: number | null;
   imageUrl?: string | null;
+  planted?: Date | null;
 }
 
 export type ITimeRange = {

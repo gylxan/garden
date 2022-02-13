@@ -27,6 +27,7 @@ model Plant {
   harvestTimeRange   PlantTimeRange? @relation("harvest", fields: [harvestTimeRangeId], references: [id])
   sowingTimeRangeId  Int?
   harvestTimeRangeId Int?
+  planted            DateTime?
 
   @@map(name: "plants")
 }

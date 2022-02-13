@@ -4,12 +4,12 @@ import * as fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as path from 'path';
 
-import { defaultPlant } from '../../constants/plant';
-import { errorResponse, validationError } from '../../helpers/error';
-import { IError, IErrorResponse } from '../../interfaces/Error';
-import { IPlant } from '../../interfaces/Plant';
-import { Method } from '../../interfaces/Request';
-import prisma from '../../lib/prisma';
+import { defaultPlant } from '../../../constants/plant';
+import { errorResponse, validationError } from '../../../helpers/error';
+import { IError, IErrorResponse } from '../../../interfaces/Error';
+import { IPlant } from '../../../interfaces/Plant';
+import { Method } from '../../../interfaces/Request';
+import prisma from '../../../lib/prisma';
 
 // Disable internal body parser of next.js
 export const config = {
