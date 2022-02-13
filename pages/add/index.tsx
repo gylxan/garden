@@ -1,7 +1,6 @@
 import UploadIcon from '@mui/icons-material/Upload';
 import {
   Button,
-  Container,
   FormControlLabel,
   FormGroup,
   FormHelperText,
@@ -61,7 +60,7 @@ const PlantsAdd: NextPage = () => {
   const handleSliderChange = (e: Event, value: number | number[]) => {
     if (Array.isArray(value) && value.length === 2) {
       // @ts-expect-error
-      changePlantValue(e.target.name as keyof IPlant, { form: value[0], to: value[1] });
+      changePlantValue(e.target.name as keyof IPlant, { from: value[0], to: value[1] });
     }
   };
 

@@ -1,14 +1,15 @@
 export interface IPlant {
+  id?: number | null;
   name: string;
   botanicalName: string;
-  sowingDescription?: string;
-  harvestDescription?: string;
-  perennial: boolean;
-  sowingTimeRange?: ITimeRange;
-  harvestTimeRange?: ITimeRange;
-  height?: number;
-  distance?: number;
-  imageUrl?: string;
+  sowingDescription?: string | null;
+  harvestDescription?: string | null;
+  perennial?: boolean | null;
+  sowingTimeRange?: ITimeRange | null;
+  harvestTimeRange?: ITimeRange | null;
+  height?: number | null;
+  distance?: number | null;
+  imageUrl?: string | null;
 }
 
 export type ITimeRange = {

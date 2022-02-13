@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Plant {
+  id                 Int             @id @default(autoincrement())
+  name               String          @unique
+  botanicalName      String          @unique
+  sowingDescription  String?
+  harvestDescription String?
+  perennial          Boolean?        @default(false)
+  height             Int?            @default(0)
+  distance           Int?            @default(0)
+  imageUrl           String?
+  sowingTimeRange    PlantTimeRange? @relation("sowing", fields: [sowingTimeRangeId], references: [id])
+  harvestTimeRange   PlantTimeRange? @relation("harvest", fields: [harvestTimeRangeId], references: [id])
+  sowingTimeRangeId  Int?
+  harvestTimeRangeId Int?
+
+  @@map(name: "plants")
+}
+
+model PlantTimeRange {
+  id           Int     @id @default(autoincrement())
+  from         Int
+  to           Int
+  sowingPlant  Plant[] @relation("sowing")
+  harvestPlant Plant[] @relation("harvest")
+}
