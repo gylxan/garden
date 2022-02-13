@@ -4,6 +4,7 @@
   "description": "Web page to manage and watch plants in garden",
   "private": true,
   "scripts": {
+    "postinstall": "npx prisma generate || true",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

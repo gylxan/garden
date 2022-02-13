@@ -1,8 +1,11 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// For Raspberry pi: Look here how to get prisma on Raspberry Pi OS running:
+// https://github.com/pantharshit00/prisma-rpi-builds
 
 generator client {
   provider = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
