@@ -16,7 +16,7 @@ export function PlantCard({ plant }: PlantsAddPageProps) {
         <CardMedia
           component="img"
           height="140"
-          image={plant.imageUrl}
+          image={plant.imageUrl || '/plants/placeholder.png'}
           alt="Plant image"
           onLoad={() => setImageLoading(false)}
           sx={{ display: isImageLoading ? 'none' : 'block' }}
