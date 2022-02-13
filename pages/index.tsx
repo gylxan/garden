@@ -4,6 +4,8 @@ import { Box } from '@mui/system';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import { useEffect, useState } from 'react';
+
 import Link from '../components/Link';
 import Page from '../components/Page/page';
 import { PlantCard } from '../components/PlantCard';
@@ -19,12 +21,28 @@ const Plants: NextPage = () => {
   const { query } = useRouter();
   const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Home);
-  const { data: plants, fetchData, status } = useFetch<IPlant[]>({ url: '/api/plants' });
-
+  const { data: loadedPlants, fetchData, status } = useFetch<IPlant[]>({ url: '/api/plants' });
+  const [plants, setPlants] = useState<IPlant[]>([]);
   const isLoading = status === Status.Loading;
+
   useComponentDidMount(() => {
     fetchData();
   });
+
+  useEffect(() => {
+    if (loadedPlants === null) {
+      return;
+    }
+    setPlants([...loadedPlants]);
+  }, [loadedPlants]);
+
+  function handleUpdate(plant: IPlant) {
+    const newPlants = [...plants];
+
+    setPlants(
+      newPlants.map((currentPlant) => (currentPlant.id === plant.id ? { ...currentPlant, ...plant } : currentPlant)),
+    );
+  }
 
   function renderSkeletons() {
     return Array(NUM_PLACEHOLDERS)
@@ -42,7 +60,9 @@ const Plants: NextPage = () => {
               name.toLowerCase().includes((search as string).toLowerCase())
             : true,
         )
-        .map((plant) => <Box component={PlantCard} key={plant.name} plant={plant} sx={{ width: '100%' }} />)
+        .map((plant) => (
+          <Box component={PlantCard} key={plant.name} plant={plant} onUpdate={handleUpdate} sx={{ width: '100%' }} />
+        ))
     );
   }
 

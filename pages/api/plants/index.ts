@@ -82,6 +82,14 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<IPlant | IEr
         data: {
           ...defaultPlant,
           ...plant,
+          distance:
+            typeof plant.distance === 'string' && plant.distance.trim() !== ''
+              ? parseInt(plant.distance)
+              : defaultPlant.distance,
+          height:
+            typeof plant.height === 'string' && plant.height.trim() !== ''
+              ? parseInt(plant.height)
+              : defaultPlant.height,
           ...(plant.sowingTimeRange ? { sowingTimeRange: { create: { ...plant.sowingTimeRange } } } : {}),
           ...(plant.harvestTimeRange ? { harvestTimeRange: { create: { ...plant.harvestTimeRange } } } : {}),
         },
