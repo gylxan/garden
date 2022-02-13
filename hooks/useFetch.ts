@@ -6,6 +6,7 @@ type Properties = {
   url: string;
   method?: Method;
   headers?: HeadersInit;
+  body?: any;
 };
 
 export enum Status {
@@ -15,7 +16,7 @@ export enum Status {
   Failed = 'failed',
 }
 
-export default function useFetch<T>({ url, method = Method.GET, headers }: Properties) {
+export default function useFetch<T>() {
   const [fetchState, setFetchData] = useState<{ status: Status; error: null | string; data: null | T }>({
     status: Status.Initial,
     error: null,
@@ -23,7 +24,7 @@ export default function useFetch<T>({ url, method = Method.GET, headers }: Prope
   });
   const { data, status, error } = fetchState;
 
-  function fetchData(body: any = null) {
+  function fetchData({ url, method = Method.GET, headers, body = null }: Properties) {
     setFetchData({ data, status: Status.Loading, error: null });
     return fetch(url, { method, body, headers })
       .then(async (response) => {

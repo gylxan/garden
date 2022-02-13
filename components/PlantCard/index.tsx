@@ -1,6 +1,8 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import {
+  Alert,
+  AlertColor,
   Card,
   CardActions,
   CardContent,
@@ -8,10 +10,11 @@ import {
   CircularProgress,
   IconButton,
   Skeleton,
+  Snackbar,
   Typography,
 } from '@mui/material';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import useFetch, { Status } from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
@@ -24,38 +27,47 @@ export interface PlantsAddPageProps {
 
 export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
   const [isImageLoading, setImageLoading] = useState(true);
-  const {
-    error: plantError,
-    status: plantStatus,
-    fetchData: updatePlant,
-  } = useFetch<IPlant>({
-    url: `/api/plants/${plant.id}/plant`,
-    method: Method.POST,
+  const [alert, setAlert] = useState<{ open: boolean; message: string; type: AlertColor }>({
+    open: false,
+    message: '',
+    type: 'success',
   });
-  const {
-    error: unplantError,
-    status: unplantStatus,
-    fetchData: updateUnplant,
-  } = useFetch({
-    url: `/api/plants/${plant.id}/plant`,
-    method: Method.DELETE,
-  });
+  const { error, status, data, fetchData } = useFetch<IPlant>();
+  const isRequestLoading = status === Status.Loading;
+
+  async function updatePlant(planted: boolean) {
+    await fetchData({
+      url: `/api/plants/${plant.id}/plant`,
+      method: planted ? Method.POST : Method.DELETE,
+    });
+  }
+
+  useEffect(() => {
+    if (status === Status.Successful) {
+      onUpdate(data as IPlant);
+      setAlert({
+        open: true,
+        message: `Pflanze "${plant.name}" ${data?.planted ? 'geplanzt' : 'ausgebuddelt'}`,
+        type: 'success',
+      });
+    }
+
+    if (status === Status.Failed) {
+      setAlert({ open: true, message: `Fehler: ${error}`, type: 'error' });
+    }
+  }, [status]);
 
   async function handlePlant() {
-    const plant = await updatePlant();
-    if (!plantError) {
-      onUpdate(plant as IPlant);
-    }
+    updatePlant(true);
   }
 
   async function handleUnplant() {
-    const plant = await updateUnplant();
-    if (!unplantError) {
-      onUpdate(plant as IPlant);
-    }
+    updatePlant(false);
   }
 
-  const isRequestLoading = plantStatus === Status.Loading || unplantStatus === Status.Loading;
+  function handleCloseAlert() {
+    setAlert({ ...alert, open: false });
+  }
 
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -114,6 +126,11 @@ export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
           />
         )}
       </CardActions>
+      <Snackbar onClose={handleCloseAlert} open={alert.open} autoHideDuration={3000}>
+        <Alert onClose={handleCloseAlert} severity={alert.type} sx={{ width: '100%' }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }

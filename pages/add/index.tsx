@@ -31,10 +31,7 @@ const PlantsAdd: NextPage = () => {
   const { name, description } = getPageConfiguration(Pages.PlantsAdd);
   const { push } = useRouter();
 
-  const { status, fetchData, error } = useFetch({
-    url: '/api/plants',
-    method: Method.POST,
-  });
+  const { status, fetchData, error } = useFetch();
   const [image, setImage] = useState<File | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [plant, setPlant] = useState<IPlant>({ ...defaultPlant });
@@ -76,7 +73,11 @@ const PlantsAdd: NextPage = () => {
     const formData = new FormData();
     formData.append('data', JSON.stringify(plant));
     formData.append('image', image as File);
-    fetchData(formData);
+    fetchData({
+      url: '/api/plants',
+      method: Method.POST,
+      body: formData,
+    });
   };
   const fieldProps = { disabled: isLoading, onChange: handleChange };
 

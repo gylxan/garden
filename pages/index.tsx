@@ -21,12 +21,12 @@ const Plants: NextPage = () => {
   const { query } = useRouter();
   const { query: search } = query;
   const { name, description } = getPageConfiguration(Pages.Home);
-  const { data: loadedPlants, fetchData, status } = useFetch<IPlant[]>({ url: '/api/plants' });
+  const { data: loadedPlants, fetchData, status } = useFetch<IPlant[]>();
   const [plants, setPlants] = useState<IPlant[]>([]);
   const isLoading = status === Status.Loading;
 
   useComponentDidMount(() => {
-    fetchData();
+    fetchData({ url: '/api/plants' });
   });
 
   useEffect(() => {
