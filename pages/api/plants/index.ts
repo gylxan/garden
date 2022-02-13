@@ -31,11 +31,11 @@ const plantsFolder = 'plants';
 const plantsPublicFolder = path.resolve('./public', plantsFolder);
 
 async function validate(plant: IPlant) {
-  const { name, botanicalName } = plant;
+  const { name } = plant;
   // TODO Use yup for validation here
   const foundPlant = await prisma.plant.findFirst({
     where: {
-      OR: [{ name }, { botanicalName }],
+      name,
     },
   });
   if (!foundPlant) {
@@ -43,9 +43,6 @@ async function validate(plant: IPlant) {
   }
   if (foundPlant.name === name) {
     throw validationError(`Pflanze mit Name "${name}" bereits vorhanden`, 'name');
-  }
-  if (foundPlant.botanicalName === botanicalName) {
-    throw validationError(`Pflanze mit botanischen Namen "${name}" bereits vorhanden`, 'botanicalName');
   }
 }
 
