@@ -7,15 +7,6 @@ import { IPlant } from '../../../../interfaces/Plant';
 import { Method } from '../../../../interfaces/Request';
 import prisma from '../../../../lib/prisma';
 
-const defaultIncludeFields = {
-  sowingTimeRange: {
-    select: { from: true, to: true },
-  },
-  harvestTimeRange: {
-    select: { from: true, to: true },
-  },
-};
-
 async function updatePlanted(req: NextApiRequest, res: NextApiResponse<IPlant | IErrorResponse>, planted: null | Date) {
   const { id } = req.query;
   try {
@@ -26,7 +17,6 @@ async function updatePlanted(req: NextApiRequest, res: NextApiResponse<IPlant | 
       data: {
         planted,
       },
-      include: defaultIncludeFields,
     });
     return res.status(200).json(newPlant);
   } catch (e) {

@@ -1,4 +1,5 @@
 import CalendarIcon from '@mui/icons-material/CalendarToday';
+import EditIcon from '@mui/icons-material/Edit';
 import PlantIcon from '@mui/icons-material/YardOutlined';
 
 import { PageConfiguration } from '../interfaces/Page';
@@ -7,6 +8,7 @@ export enum Pages {
   Home,
   Calendar,
   PlantsAdd,
+  PlantsEdit,
 }
 
 export const pages: Record<Pages, PageConfiguration> = {
@@ -21,6 +23,12 @@ export const pages: Record<Pages, PageConfiguration> = {
     description: 'Pflanzen hinzufügen',
     route: '/add',
     icon: PlantIcon,
+  },
+  [Pages.PlantsEdit]: {
+    name: 'Pflanze bearbeiten',
+    description: 'Bearbeiten der Pflanze',
+    route: '/{id}',
+    icon: EditIcon,
   },
   [Pages.Calendar]: {
     name: 'Kalender',

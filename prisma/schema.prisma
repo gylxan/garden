@@ -4,7 +4,7 @@
 // https://github.com/pantharshit00/prisma-rpi-builds
 
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "binary"
 }
 
@@ -14,28 +14,20 @@ datasource db {
 }
 
 model Plant {
-  id                 Int             @id @default(autoincrement())
-  name               String          @unique
+  id                 Int       @id @default(autoincrement())
+  name               String    @unique
   botanicalName      String
   sowingDescription  String?
   harvestDescription String?
-  perennial          Boolean?        @default(false)
-  height             Int?            @default(0)
-  distance           Int?            @default(0)
+  perennial          Boolean?  @default(false)
+  height             Int?      @default(0)
+  distance           Int?      @default(0)
   imageUrl           String?
-  sowingTimeRange    PlantTimeRange? @relation("sowing", fields: [sowingTimeRangeId], references: [id])
-  harvestTimeRange   PlantTimeRange? @relation("harvest", fields: [harvestTimeRangeId], references: [id])
-  sowingTimeRangeId  Int?
-  harvestTimeRangeId Int?
+  sowingFrom         Int?
+  sowingTo           Int?
+  harvestFrom        Int?
+  harvestTo          Int?
   planted            DateTime?
 
   @@map(name: "plants")
-}
-
-model PlantTimeRange {
-  id           Int     @id @default(autoincrement())
-  from         Int
-  to           Int
-  sowingPlant  Plant[] @relation("sowing")
-  harvestPlant Plant[] @relation("harvest")
 }

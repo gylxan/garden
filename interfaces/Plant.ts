@@ -5,15 +5,12 @@ export interface IPlant {
   sowingDescription?: string | null;
   harvestDescription?: string | null;
   perennial?: boolean | null;
-  sowingTimeRange?: ITimeRange | null;
-  harvestTimeRange?: ITimeRange | null;
+  sowingFrom?: number | null;
+  sowingTo?: number | null;
+  harvestFrom?: number | null;
+  harvestTo?: number | null;
   height?: number | null;
   distance?: number | null;
   imageUrl?: string | null;
   planted?: Date | null;
 }
-
-export type ITimeRange = {
-  from: number;
-  to: number;
-};

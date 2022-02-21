@@ -1,4 +1,5 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditIcon from '@mui/icons-material/Edit';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import {
   Alert,
@@ -7,7 +8,6 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  CircularProgress,
   IconButton,
   Skeleton,
   Snackbar,
@@ -16,9 +16,12 @@ import {
 
 import { useEffect, useState } from 'react';
 
+import { Pages } from '../../constants/page';
+import { getRoute } from '../../helpers/page';
 import useFetch, { Status } from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
 import { Method } from '../../interfaces/Request';
+import Link from '../Link';
 
 export interface PlantsAddPageProps {
   plant: IPlant;
@@ -35,12 +38,18 @@ export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
   const { error, status, data, fetchData } = useFetch<IPlant>();
   const isRequestLoading = status === Status.Loading;
 
-  async function updatePlant(planted: boolean) {
-    await fetchData({
-      url: `/api/plants/${plant.id}/plant`,
-      method: planted ? Method.POST : Method.DELETE,
-    });
-  }
+  const actions = [
+    {
+      icon: EditIcon,
+      label: 'edit',
+      link: getRoute(Pages.PlantsEdit, { id: plant.id }),
+    },
+    {
+      icon: plant.planted ? RemoveCircleOutlineIcon : AddCircleOutlineIcon,
+      label: plant.planted ? 'unplant' : 'plant',
+      handler: plant.planted ? handleUnplant : handlePlant,
+    },
+  ];
 
   useEffect(() => {
     if (status === Status.Successful) {
@@ -57,11 +66,18 @@ export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
     }
   }, [status]);
 
-  async function handlePlant() {
+  async function updatePlant(planted: boolean) {
+    await fetchData({
+      url: `/api/plants/${plant.id}/plant`,
+      method: planted ? Method.POST : Method.DELETE,
+    });
+  }
+
+  function handlePlant() {
     updatePlant(true);
   }
 
-  async function handleUnplant() {
+  function handleUnplant() {
     updatePlant(false);
   }
 
@@ -90,41 +106,32 @@ export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
           {plant.botanicalName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {plant.sowingDescription?.length ?? 0 > 180
+          {(plant.sowingDescription?.length ?? 0) > 180
             ? `${plant.sowingDescription?.substring(0, 180)}...`
             : plant.sowingDescription}
         </Typography>
       </CardContent>
       <CardActions sx={{ mt: 'auto', position: 'relative' }}>
-        {!!plant.planted ? (
-          <IconButton
-            aria-label="unplant"
-            disabled={isRequestLoading}
-            aria-disabled={isRequestLoading}
-            onClick={handleUnplant}
-          >
-            <RemoveCircleOutlineIcon />
-          </IconButton>
-        ) : (
-          <IconButton
-            aria-label="plant"
-            disabled={isRequestLoading}
-            aria-disabled={isRequestLoading}
-            onClick={handlePlant}
-          >
-            <AddCircleOutlineIcon />
-          </IconButton>
-        )}
-        {isRequestLoading && (
-          <CircularProgress
-            size={24}
-            sx={{
-              position: 'absolute',
-              top: '16px',
-              left: '16px',
-            }}
-          />
-        )}
+        {actions.map(({ icon: Icon, label, handler, link }) => {
+          const button = (
+            <IconButton
+              key={label}
+              aria-label={label}
+              disabled={isRequestLoading}
+              aria-disabled={isRequestLoading}
+              {...(handler ? { onClick: handler } : {})}
+            >
+              <Icon />
+            </IconButton>
+          );
+          return link ? (
+            <Link key={`${label}-link`} to={link} passHref tabIndex={-1}>
+              {button}
+            </Link>
+          ) : (
+            button
+          );
+        })}
       </CardActions>
       <Snackbar onClose={handleCloseAlert} open={alert.open} autoHideDuration={3000}>
         <Alert onClose={handleCloseAlert} severity={alert.type} sx={{ width: '100%' }}>

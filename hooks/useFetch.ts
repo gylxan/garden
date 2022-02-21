@@ -1,13 +1,7 @@
 import { useState } from 'react';
 
+import request, { RequestProperties } from '../helpers/request';
 import { Method } from '../interfaces/Request';
-
-type Properties = {
-  url: string;
-  method?: Method;
-  headers?: HeadersInit;
-  body?: any;
-};
 
 export enum Status {
   Initial = 'initial',
@@ -24,21 +18,15 @@ export default function useFetch<T>() {
   });
   const { data, status, error } = fetchState;
 
-  function fetchData({ url, method = Method.GET, headers, body = null }: Properties) {
+  async function fetchData({ url, method = Method.GET, headers, body = null }: RequestProperties) {
     setFetchData({ data, status: Status.Loading, error: null });
-    return fetch(url, { method, body, headers })
-      .then(async (response) => {
-        if (response.ok) {
-          const data = (await response.json()) as unknown as T;
-          setFetchData({ data, status: Status.Successful, error: null });
-          return data;
-        }
-        throw response;
-      })
-      .catch(async (response) => {
-        const error = (await response.json())?.error?.message;
-        setFetchData({ data, status: Status.Failed, error: error || response.statusText });
-      });
+
+    try {
+      const data = await request<T>({ url, method, body, headers });
+      setFetchData({ data, status: Status.Successful, error: null });
+    } catch (e) {
+      setFetchData({ data, status: Status.Failed, error: e as string });
+    }
   }
 
   return { status, error, data, fetchData };
