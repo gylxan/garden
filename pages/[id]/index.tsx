@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps<PlantsEditProps> = async ({ 
     const plant = await request<IPlant>({ url: `${baseUrl}/api/plants/${params?.id}` });
     return {
       props: {
-        plant: null,
+        plant,
         error: null,
       }, // will be passed to the page component as props
     };
