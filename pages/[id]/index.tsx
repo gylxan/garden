@@ -1,7 +1,6 @@
 import { Button, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import type { GetServerSideProps, NextPage } from 'next';
-import absoluteUrl from 'next-absolute-url';
 
 import React from 'react';
 
@@ -56,13 +55,13 @@ const PlantsEdit: NextPage<PlantsEditProps> = ({ plant, error: loadError }) => {
 };
 
 export const getServerSideProps: GetServerSideProps<PlantsEditProps> = async ({ req, params }) => {
-  const { origin } = absoluteUrl(req);
-
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const baseUrl = req ? `${protocol}://${req.headers.host}` : '';
   try {
-    const plant = await request<IPlant>({ url: `${origin}/api/plants/${params?.id}` });
+    const plant = await request<IPlant>({ url: `${baseUrl}/api/plants/${params?.id}` });
     return {
       props: {
-        plant,
+        plant: null,
         error: null,
       }, // will be passed to the page component as props
     };
