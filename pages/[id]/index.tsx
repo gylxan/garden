@@ -1,21 +1,21 @@
-import { Button, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import type { GetServerSideProps, NextPage } from "next";
-import absoluteUrl from "next-absolute-url";
+import { Button, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import type { GetServerSideProps, NextPage } from 'next';
+import absoluteUrl from 'next-absolute-url';
 
-import React from "react";
+import React from 'react';
 
-import Link from "../../components/Link";
-import Page from "../../components/Page/page";
-import PlantForm from "../../components/PlantForm";
-import { Pages } from "../../constants/page";
-import { getPageConfiguration, getRoute } from "../../helpers/page";
-import request from "../../helpers/request";
-import { IPlant } from "../../interfaces/Plant";
+import Link from '../../components/Link';
+import Page from '../../components/Page/page';
+import PlantForm from '../../components/PlantForm';
+import { Pages } from '../../constants/page';
+import { getPageConfiguration, getRoute } from '../../helpers/page';
+import request from '../../helpers/request';
+import { IPlant } from '../../interfaces/Plant';
 
 type PlantsEditProps = {
-  plant?: IPlant;
-  error?: string;
+  plant: IPlant | null;
+  error: string | null;
 };
 
 const PlantsEdit: NextPage<PlantsEditProps> = ({ plant, error: loadError }) => {
@@ -45,7 +45,7 @@ const PlantsEdit: NextPage<PlantsEditProps> = ({ plant, error: loadError }) => {
   };
 
   const renderForm = () => {
-    return <PlantForm plant={plant} />;
+    return <PlantForm plant={plant || undefined} />;
   };
 
   return (
@@ -63,12 +63,14 @@ export const getServerSideProps: GetServerSideProps<PlantsEditProps> = async ({ 
     return {
       props: {
         plant,
+        error: null,
       }, // will be passed to the page component as props
     };
   } catch (e) {
     return {
       props: {
-        error: e,
+        plant: null,
+        error: e as string,
       }, // will be passed to the page component as props
     };
   }
