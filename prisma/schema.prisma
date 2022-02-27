@@ -22,7 +22,7 @@ model Plant {
   perennial          Boolean?  @default(false)
   height             Int?      @default(0)
   distance           Int?      @default(0)
-  imageUrl           String?
+  imageId            String?
   sowingFrom         Int?
   sowingTo           Int?
   harvestFrom        Int?
