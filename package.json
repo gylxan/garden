@@ -18,6 +18,7 @@
     "@prisma/client": "^3.9.1",
     "classnames": "^2.3.1",
     "formidable": "^2.0.1",
+    "@googleapis/drive": "^2.2.0",
     "lodash": "^4.17.21",
     "next": "12.0.9",
     "next-absolute-url": "^1.2.2",
