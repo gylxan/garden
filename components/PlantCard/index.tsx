@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 
 import { Pages } from '../../constants/page';
 import { getRoute } from '../../helpers/page';
+import { getImageUrl } from '../../helpers/plant';
 import useFetch, { Status } from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
 import { Method } from '../../interfaces/Request';
@@ -91,10 +92,10 @@ export function PlantCard({ plant, onUpdate }: PlantsAddPageProps) {
         <CardMedia
           component="img"
           height="140"
-          image={plant.imageUrl || '/plants/placeholder.png'}
+          image={plant.imageId ? getImageUrl(plant) : '/plants/placeholder.png'}
           alt="Plant image"
           onLoad={() => setImageLoading(false)}
-          sx={{ display: isImageLoading ? 'none' : 'block' }}
+          sx={{ display: isImageLoading ? 'none' : 'block', objectFit: 'contain' }}
         />
         {isImageLoading && <Skeleton variant="rectangular" height={140} />}
       </>
