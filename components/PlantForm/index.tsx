@@ -20,6 +20,7 @@ import { monthNames, monthNamesShort } from '../../constants/date';
 import { Pages } from '../../constants/page';
 import { defaultPlant, placeholderImageUrl } from '../../constants/plant';
 import { getRoute } from '../../helpers/page';
+import { getImageUrl } from '../../helpers/plant';
 import useFetch, { Status } from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
 import { Method } from '../../interfaces/Request';
@@ -41,7 +42,7 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
   useEffect(() => {
     if (plant) {
       setCurrentPlant({ ...plant });
-      setObjectUrl(plant.imageUrl ?? null);
+      setObjectUrl(plant.imageId ? getImageUrl(plant) : null);
     }
   }, [plant]);
 
@@ -194,7 +195,13 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
         </Box>
         <Button variant="contained" color="secondary" component="label" disabled={isLoading} startIcon={<UploadIcon />}>
           Bild auswählen
-          <input type="file" name="image" accept="image/png, image/jpeg" hidden onChange={uploadToClient} />
+          <input
+            type="file"
+            name="image"
+            accept="image/png, image/jpeg, image/svg+xml"
+            hidden
+            onChange={uploadToClient}
+          />
         </Button>
       </Stack>
       {error && (
