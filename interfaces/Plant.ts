@@ -11,6 +11,6 @@ export interface IPlant {
   harvestTo?: number | null;
   height?: number | null;
   distance?: number | null;
-  imageUrl?: string | null;
+  imageId?: string | null;
   planted?: Date | null;
 }
