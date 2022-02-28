@@ -6,6 +6,7 @@ import * as path from 'path';
 
 import { defaultPlant } from '../../../constants/plant';
 import { errorResponse, validationError } from '../../../helpers/error';
+import { deleteFile, getFileName, uploadFile } from '../../../helpers/google';
 import { convertToNumber } from '../../../helpers/string';
 import { IError, IErrorResponse } from '../../../interfaces/Error';
 import { IPlant } from '../../../interfaces/Plant';
@@ -18,9 +19,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-const plantsFolder = 'plants';
-const plantsPublicFolder = path.resolve('./public', plantsFolder);
 
 async function validate(plant: IPlant, isCreate = true) {
   const { name, id } = plant;
@@ -76,32 +74,48 @@ export const savePlant = (req: NextApiRequest, res: NextApiResponse<IPlant | IEr
       return res.status(err.httpCode || 400).json(errorResponse(err.message));
     }
 
-    const plant = JSON.parse(fields.data as string);
+    const newPlant = JSON.parse(fields.data as string);
     try {
-      await validate(plant, isCreate);
+      await validate(newPlant, isCreate);
+      const originalPlant = isCreate
+        ? defaultPlant
+        : await prisma.plant.findFirst({
+            where: {
+              id: newPlant.id as number,
+            },
+          });
+
+      let imageId = originalPlant?.imageId || null;
+
       if (files.image) {
-        console.log('upload file');
-        const { filepath } = files.image as unknown as File;
-        const imageName = `${plant.name}.png`;
-        fs.renameSync(filepath, `${plantsPublicFolder}/${imageName}`);
-        plant.imageUrl = `/${plantsFolder}/${imageName}`;
-      } else if (isCreate) {
-        plant.imageUrl = `/${plantsFolder}/placeholder.png`;
+        const { filepath, mimetype, originalFilename } = files.image as unknown as File;
+        imageId = await uploadFile(
+          filepath,
+          getFileName(newPlant.name, originalFilename as string),
+          mimetype || 'image/png',
+        );
+
+        if (originalPlant?.imageId) {
+          await deleteFile(originalPlant.imageId);
+        }
+
+        fs.unlinkSync(filepath);
       }
 
       const data = {
-        ...defaultPlant,
-        ...plant,
-        distance: convertToNumber(plant.distance) || defaultPlant.distance,
-        height: convertToNumber(plant.height) || defaultPlant.height,
+        ...originalPlant,
+        ...newPlant,
+        imageId,
+        distance: convertToNumber(newPlant.distance) || defaultPlant.distance,
+        height: convertToNumber(newPlant.height) || defaultPlant.height,
       };
 
-      const newPlant = isCreate
+      const savedPlant = isCreate
         ? await prisma.plant.create({
             data,
           })
         : await prisma.plant.update({ data, where: { id: data.id } });
-      return res.status(200).json(newPlant);
+      return res.status(200).json(savedPlant);
     } catch (e) {
       return res.status(400).json(errorResponse(e as IError));
     }
