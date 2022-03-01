@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Fab, Skeleton } from '@mui/material';
+import { Alert, AlertColor, Fab, Skeleton, Snackbar } from '@mui/material';
 import { Box } from '@mui/system';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -23,6 +23,11 @@ const Plants: NextPage = () => {
   const { name, description } = getPageConfiguration(Pages.Home);
   const { data: loadedPlants, fetchData, status } = useFetch<IPlant[]>();
   const [plants, setPlants] = useState<IPlant[]>([]);
+  const [alert, setAlert] = useState<{ open: boolean; message: string; type: AlertColor }>({
+    open: false,
+    message: '',
+    type: 'success',
+  });
   const isLoading = status === Status.Loading;
 
   useComponentDidMount(() => {
@@ -44,6 +49,20 @@ const Plants: NextPage = () => {
     );
   }
 
+  function handleDelete(plant: IPlant) {
+    const newPlants = [...plants];
+    setPlants(newPlants.filter((currPlant) => currPlant.id !== plant.id));
+    setAlert({
+      open: true,
+      message: `Pflanze "${plant.name}" gelöscht`,
+      type: 'success',
+    });
+  }
+
+  function handleCloseAlert() {
+    setAlert({ ...alert, open: false });
+  }
+
   function renderSkeletons() {
     return Array(NUM_PLACEHOLDERS)
       .fill(null)
@@ -61,7 +80,14 @@ const Plants: NextPage = () => {
             : true,
         )
         .map((plant) => (
-          <Box component={PlantCard} key={plant.name} plant={plant} onUpdate={handleUpdate} sx={{ width: '100%' }} />
+          <Box
+            component={PlantCard}
+            key={plant.name}
+            plant={plant}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            sx={{ width: '100%' }}
+          />
         ))
     );
   }
@@ -91,6 +117,11 @@ const Plants: NextPage = () => {
           <AddIcon />
         </Fab>
       </Link>
+      <Snackbar onClose={handleCloseAlert} open={alert.open} autoHideDuration={3000}>
+        <Alert onClose={handleCloseAlert} severity={alert.type} sx={{ width: '100%' }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Page>
   );
 };
