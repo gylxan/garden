@@ -130,13 +130,18 @@ export function PlantCard({ plant, onUpdate, onDelete }: PlantsAddPageProps) {
           {isImageLoading && <Skeleton variant="rectangular" height={140} />}
         </>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h5" component="div" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {plant.name}
           </Typography>
-          <Typography gutterBottom variant="subtitle1" component="div">
+          <Typography
+            gutterBottom
+            variant="subtitle1"
+            component="div"
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
             {plant.botanicalName}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {(plant.sowingDescription?.length ?? 0) > 180
               ? `${plant.sowingDescription?.substring(0, 180)}...`
               : plant.sowingDescription}
