@@ -9,6 +9,8 @@ import {
   Switch,
   TextField,
   Typography,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import Image from 'next/image';
@@ -25,6 +27,7 @@ import useFetch, { Status } from '../../hooks/useFetch';
 import { IPlant } from '../../interfaces/Plant';
 import { Method } from '../../interfaces/Request';
 import Link from '../Link';
+import TabPanel from '../TabPanel';
 
 export interface Props {
   plant?: IPlant;
@@ -37,6 +40,7 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
   const [image, setImage] = useState<File | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [currentPlant, setCurrentPlant] = useState<IPlant>({ ...defaultPlant, ...(plant ? plant : {}) });
+  const [tabIndex, setTabIndex] = useState(0);
   const isLoading = status === Status.Loading;
 
   useEffect(() => {
@@ -90,6 +94,17 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
       body: formData,
     });
   };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue);
+  };
+
+  function getTabProps(index: number) {
+    return {
+      id: `tab-${index}`,
+      'aria-controls': `tabpanel-${index}`,
+    };
+  }
   const fieldProps = { disabled: isLoading, onChange: handleChange };
 
   return (
@@ -99,116 +114,140 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
       method="post"
       onSubmit={handleSubmit}
     >
-      <TextField
-        label="Name"
-        variant="outlined"
-        name="name"
-        required
-        {...fieldProps}
-        autoFocus
-        value={currentPlant.name || ''}
-      />
-      <TextField
-        label="Botanischer Name"
-        variant="outlined"
-        name="botanicalName"
-        {...fieldProps}
-        required
-        value={currentPlant.botanicalName || ''}
-      />
-      <TextField
-        label="Beschreibung zur Aussaat"
-        multiline
-        minRows={3}
-        variant="outlined"
-        name="sowingDescription"
-        {...fieldProps}
-        value={currentPlant.sowingDescription || ''}
-      />
-      <TextField
-        label="Beschreibung zur Ernte"
-        multiline
-        minRows={3}
-        variant="outlined"
-        name="harvestDescription"
-        {...fieldProps}
-        value={currentPlant.harvestDescription || ''}
-      />
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch name="perennial" {...fieldProps} />}
-          label="Mehrjährig"
-          checked={currentPlant.perennial || false}
+      <Tabs
+        value={tabIndex}
+        onChange={handleTabChange}
+        aria-label="plant tabs"
+        variant="scrollable"
+        allowScrollButtonsMobile
+      >
+        <Tab label="Allgemein" {...getTabProps(0)} />
+        <Tab label="Beschreibungen" {...getTabProps(1)} />
+        <Tab label="Weitere Details" {...getTabProps(2)} />
+      </Tabs>
+      <TabPanel value={tabIndex} index={0}>
+        <TextField
+          label="Name"
+          variant="outlined"
+          name="name"
+          required
+          {...fieldProps}
+          autoFocus
+          value={currentPlant.name || ''}
         />
-      </FormGroup>
-      <Typography variant="body1">Aussaatzeitraum</Typography>
-      <Slider
-        getAriaLabel={() => 'Aussaatzeitraum'}
-        getAriaValueText={(value) => monthNamesShort[value - 1]}
-        valueLabelDisplay="auto"
-        valueLabelFormat={(value) => monthNames[value - 1]}
-        name="sowing"
-        step={1}
-        marks={monthNamesShort.map((name, index) => ({ value: index + 1, label: name }))}
-        min={1}
-        max={12}
-        disableSwap
-        {...fieldProps}
-        onChange={handleSliderChange}
-        value={[currentPlant.sowingFrom || 2, currentPlant.sowingTo || 5]}
-      />
-      <Typography variant="body1">Erntezeitraum</Typography>
-      <Slider
-        getAriaLabel={() => 'Erntezeitraum'}
-        getAriaValueText={(value) => monthNamesShort[value - 1]}
-        valueLabelDisplay="auto"
-        valueLabelFormat={(value) => monthNames[value - 1]}
-        name="harvest"
-        step={1}
-        marks={monthNamesShort.map((name, index) => ({ value: index + 1, label: name }))}
-        min={1}
-        max={12}
-        disableSwap
-        {...fieldProps}
-        onChange={handleSliderChange}
-        value={[currentPlant.harvestFrom || 7, currentPlant.harvestTo || 9]}
-      />
-      <TextField
-        label="Wachshöhe in cm"
-        variant="outlined"
-        name="height"
-        type="number"
-        value={currentPlant.height || ''}
-        {...fieldProps}
-      />
-      <TextField
-        label="Abstand in cm"
-        variant="outlined"
-        name="distance"
-        type="number"
-        value={currentPlant.distance || ''}
-        {...fieldProps}
-      />
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Box sx={{ display: 'flex', position: 'relative', height: '100px', width: '100px' }}>
-          <Image alt="plant image" src={objectUrl || placeholderImageUrl} layout="fill" objectFit="contain" />
-        </Box>
-        <Button variant="contained" color="secondary" component="label" disabled={isLoading} startIcon={<UploadIcon />}>
-          Bild auswählen
-          <input
-            type="file"
-            name="image"
-            accept="image/png, image/jpeg, image/svg+xml"
-            hidden
-            onChange={uploadToClient}
+        <TextField
+          label="Botanischer Name"
+          variant="outlined"
+          name="botanicalName"
+          {...fieldProps}
+          required
+          value={currentPlant.botanicalName || ''}
+        />
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch name="perennial" {...fieldProps} />}
+            label="Mehrjährig"
+            checked={currentPlant.perennial || false}
           />
-        </Button>
-      </Stack>
-      {error && (
-        <FormHelperText error component="div">
-          Fehler: {error}
-        </FormHelperText>
-      )}
+        </FormGroup>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Box sx={{ display: 'flex', position: 'relative', height: '100px', width: '100px' }}>
+            <Image alt="plant image" src={objectUrl || placeholderImageUrl} layout="fill" objectFit="contain" />
+          </Box>
+          <Button
+            variant="contained"
+            color="secondary"
+            component="label"
+            disabled={isLoading}
+            startIcon={<UploadIcon />}
+          >
+            Bild auswählen
+            <input
+              type="file"
+              name="image"
+              accept="image/png, image/jpeg, image/svg+xml"
+              hidden
+              onChange={uploadToClient}
+            />
+          </Button>
+        </Stack>
+        {error && (
+          <FormHelperText error component="div">
+            Fehler: {error}
+          </FormHelperText>
+        )}
+      </TabPanel>
+      <TabPanel value={tabIndex} index={1}>
+        <TextField
+          label="Beschreibung zur Aussaat"
+          multiline
+          minRows={3}
+          variant="outlined"
+          name="sowingDescription"
+          {...fieldProps}
+          value={currentPlant.sowingDescription || ''}
+        />
+        <TextField
+          label="Beschreibung zur Ernte"
+          multiline
+          minRows={3}
+          variant="outlined"
+          name="harvestDescription"
+          {...fieldProps}
+          value={currentPlant.harvestDescription || ''}
+        />
+      </TabPanel>
+      <TabPanel value={tabIndex} index={2}>
+        <Typography variant="body1">Aussaatzeitraum</Typography>
+        <Slider
+          getAriaLabel={() => 'Aussaatzeitraum'}
+          getAriaValueText={(value) => monthNamesShort[value - 1]}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => monthNames[value - 1]}
+          name="sowing"
+          step={1}
+          marks={monthNamesShort.map((name, index) => ({ value: index + 1, label: name }))}
+          min={1}
+          max={12}
+          disableSwap
+          {...fieldProps}
+          onChange={handleSliderChange}
+          value={[currentPlant.sowingFrom || 2, currentPlant.sowingTo || 5]}
+        />
+        <Typography variant="body1">Erntezeitraum</Typography>
+        <Slider
+          getAriaLabel={() => 'Erntezeitraum'}
+          getAriaValueText={(value) => monthNamesShort[value - 1]}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => monthNames[value - 1]}
+          name="harvest"
+          step={1}
+          marks={monthNamesShort.map((name, index) => ({ value: index + 1, label: name }))}
+          min={1}
+          max={12}
+          disableSwap
+          {...fieldProps}
+          onChange={handleSliderChange}
+          value={[currentPlant.harvestFrom || 7, currentPlant.harvestTo || 9]}
+        />
+        <TextField
+          label="Wachshöhe in cm"
+          variant="outlined"
+          name="height"
+          type="number"
+          value={currentPlant.height || ''}
+          {...fieldProps}
+        />
+        <TextField
+          label="Abstand in cm"
+          variant="outlined"
+          name="distance"
+          type="number"
+          value={currentPlant.distance || ''}
+          {...fieldProps}
+        />
+      </TabPanel>
+
       <Box
         sx={{
           display: 'flex',
