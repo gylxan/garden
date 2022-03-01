@@ -20,6 +20,8 @@ import {
   Snackbar,
   Typography,
 } from '@mui/material';
+import { Theme } from '@mui/system/createTheme';
+import { SxProps } from '@mui/system/styleFunctionSx';
 
 import { useState } from 'react';
 
@@ -35,9 +37,10 @@ export interface PlantsAddPageProps {
   plant: IPlant;
   onUpdate: (plant: IPlant) => void;
   onDelete: (plant: IPlant) => void;
+  sx?: SxProps<Theme>;
 }
 
-export function PlantCard({ plant, onUpdate, onDelete }: PlantsAddPageProps) {
+export function PlantCard({ plant, onUpdate, onDelete, sx }: PlantsAddPageProps) {
   const [isImageLoading, setImageLoading] = useState(true);
   const [alert, setAlert] = useState<{ open: boolean; message: string; type: AlertColor }>({
     open: false,
@@ -117,7 +120,7 @@ export function PlantCard({ plant, onUpdate, onDelete }: PlantsAddPageProps) {
 
   return (
     <>
-      <Card sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Card sx={{ display: 'flex', flexDirection: 'column', ...sx }}>
         <>
           <CardMedia
             component="img"
