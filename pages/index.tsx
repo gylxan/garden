@@ -69,26 +69,28 @@ const Plants: NextPage = () => {
       .map((_, index) => <Skeleton key={index} variant="rectangular" width="100%" height={350} />);
   }
 
+  function isFilteredPlant(plant: IPlant) {
+    const { botanicalName, name } = plant;
+    return (
+      search &&
+      !botanicalName.toLowerCase().includes((search as string).toLowerCase()) &&
+      !name.toLowerCase().includes((search as string).toLowerCase())
+    );
+  }
+
   function renderPlants() {
     return (
       plants &&
-      plants
-        .filter(({ name, botanicalName }) =>
-          search
-            ? botanicalName.toLowerCase().includes((search as string).toLowerCase()) ||
-              name.toLowerCase().includes((search as string).toLowerCase())
-            : true,
-        )
-        .map((plant) => (
-          <Box
-            component={PlantCard}
-            key={plant.name}
-            plant={plant}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            sx={{ width: '100%' }}
-          />
-        ))
+      plants.map((plant) => (
+        <Box
+          component={PlantCard}
+          key={plant.name}
+          plant={plant}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          {...(isFilteredPlant(plant) ? { sx: { display: 'none' } } : {})}
+        />
+      ))
     );
   }
 
