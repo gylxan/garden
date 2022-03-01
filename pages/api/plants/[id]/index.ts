@@ -34,8 +34,25 @@ async function handleUpdate(req: NextApiRequest, res: NextApiResponse<IPlant | I
   return savePlant(req, res, false);
 }
 
+async function handleDelete(req: NextApiRequest, res: NextApiResponse<IPlant | IErrorResponse>) {
+  const { id } = req.query;
+  try {
+    const plant = await prisma.plant.delete({
+      where: { id: parseInt(id as string) },
+    });
+    if (!plant) {
+      throw validationError(`Keine Pflanze mit der ID ${id} gefunden`, 'id');
+    }
+    return res.status(200).json(plant);
+  } catch (e) {
+    return res.status(400).json(errorResponse(e as IError));
+  }
+}
+
 export default function handler(req: NextApiRequest, res: NextApiResponse<IPlant | IErrorResponse>) {
   switch (req.method) {
+    case Method.DELETE:
+      return handleDelete(req, res);
     case Method.PUT:
       return handleUpdate(req, res);
     case Method.GET:
