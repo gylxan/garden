@@ -21,6 +21,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { monthNames, monthNamesShort } from '../../constants/date';
 import { Pages } from '../../constants/page';
 import { defaultPlant, placeholderImageUrl } from '../../constants/plant';
+import { formatDate, parseDate } from '../../helpers/date';
 import { getRoute } from '../../helpers/page';
 import { getImageUrl } from '../../helpers/plant';
 import useFetch, { Status } from '../../hooks/useFetch';
@@ -77,10 +78,12 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    changePlantValue(
-      e.currentTarget.name as keyof IPlant,
-      e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value,
-    );
+    let value: string | boolean | Date | null =
+      e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
+    if (e.currentTarget.type === 'date') {
+      value = value ? parseDate(value as string) : null;
+    }
+    changePlantValue(e.currentTarget.name as keyof IPlant, value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -105,6 +108,19 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
       'aria-controls': `tabpanel-${index}`,
     };
   }
+
+  function getFormattedPlantDate({ planted }: IPlant) {
+    if (!planted) {
+      return '';
+    }
+    let date = planted;
+    if (typeof date === 'string') {
+      // TODO: This will be obsolete for the future, when we use prisma as client
+      date = parseDate(date as string, "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    }
+    return formatDate(date);
+  }
+
   const fieldProps = { disabled: isLoading, onChange: handleChange };
 
   return (
@@ -150,6 +166,17 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
             checked={currentPlant.perennial || false}
           />
         </FormGroup>
+        <TextField
+          label="Eingepflanzt am"
+          variant="outlined"
+          name="planted"
+          type="date"
+          {...fieldProps}
+          value={getFormattedPlantDate(currentPlant)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
         <Stack direction="row" spacing={1} alignItems="center">
           <Box sx={{ display: 'flex', position: 'relative', height: '100px', width: '100px' }}>
             <Image alt="plant image" src={objectUrl || placeholderImageUrl} layout="fill" objectFit="contain" />
