@@ -78,10 +78,10 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value: string | boolean | Date =
+    let value: string | boolean | Date | null =
       e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
     if (e.currentTarget.type === 'date') {
-      value = parseDate(value as string);
+      value = value ? parseDate(value as string) : null;
     }
     changePlantValue(e.currentTarget.name as keyof IPlant, value);
   };
@@ -172,7 +172,6 @@ const PlantForm: React.FC<Props> = ({ plant }) => {
           name="planted"
           type="date"
           {...fieldProps}
-          required
           value={getFormattedPlantDate(currentPlant)}
           InputLabelProps={{
             shrink: true,
